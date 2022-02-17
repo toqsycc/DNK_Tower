@@ -74,4 +74,26 @@ void LEDstrip::turnOff(int dVal = 100)
   }
 }
 
+void LEDstrip::pushLED(){  
+  if(!isReverse && currentBase <= 7)
+  {
+    HSL color(0.0, 1.0, 0.5);
+    byte* c = color.getColorInfoRGB();
+    leds[currentBase] = CRGB(c[0], c[1], c[2]);
+    FastLED.showLeds();
+    currentBase++;
+    isReverse = currentBase == 8;
+  }
+  if(isReverse && currentBase >= 0)
+  {    
+    HSL color(0.5, 1.0, 0.5);
+    byte* c = color.getColorInfoRGB();
+    leds[currentBase] = CRGB(c[0], c[1], c[2]);
+    FastLED.showLeds();
+    currentBase--;
+    isReverse = currentBase < 0;
+  }
+}
+
+
 //#endif
