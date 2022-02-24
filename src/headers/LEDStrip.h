@@ -23,8 +23,13 @@ class LEDstrip
 private:
 	CRGB leds[8];
 	CRGB leds_side1[4];
-	bool isReverse;
-	byte currentBase;
+	CRGB leds_top[3];
+	bool isReverseBase;
+	bool isReverseSide;
+	bool isReverseTop;
+	int currentBase;
+	int currentSide;
+	int currentTop;
 public:
 	LEDstrip();
 	void activate();
@@ -33,6 +38,8 @@ public:
 	void showSide(double hueStart = 0.0, double hueEnd = 0.8, int dVal = 100);
 	void turnOff(int dVal = 100);
 	void pushLED();
+	void pushSideLED();
+	void pushTopLED();
 };
 
 //#endif

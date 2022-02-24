@@ -94,8 +94,8 @@
 #define TARGET_5          25
 #define TARGET_6          27
 // Аналоговые пины мишеней (сигнал):
-#define TARGET_SIGN_1     A0
-#define TARGET_SIGN_2     A1
+#define TARGET_SIGN_1     A1
+#define TARGET_SIGN_2     A2
 #define TARGET_SIGN_3     A3
 #define TARGET_SIGN_4     A4
 #define TARGET_SIGN_5     A5
@@ -107,7 +107,12 @@
 
 // Программные константы
 // Граница чувствительности пьезодатчиков
-#define HIT_THRESHOLD     350
+#define HIT_THRESHOLD_T1  1000
+#define HIT_THRESHOLD_T2  1000
+#define HIT_THRESHOLD_T3  1000
+#define HIT_THRESHOLD_T4  1000
+#define HIT_THRESHOLD_T5  1000
+#define HIT_THRESHOLD_T6  1000
 // Начальное количество хп
 #define HP_VALUE          100
 // коэффициент деления для перевода количества хп в цвет

@@ -9,35 +9,39 @@ Tower::~Tower()
   memset(this, NULL, sizeof(*this));
 }
 
-Tower::Tower() :
-  hitPoints(HP_VALUE),
-  hpColor(HP_COLOR)
+Tower::Tower() : hitPoints(HP_VALUE),
+                 hpColor(HP_COLOR)
 {
   bus = new RGBDiode();
   converter = new HSL(hpColor, 1.0, 0.5);
+  strip = new LEDstrip();
 
   byte hittedTarget(0);
-  targetLight = new byte[6]
-  {
-    TARGET_1,
-    TARGET_2,
-    TARGET_3,
-    TARGET_4,
-    TARGET_5,
-    TARGET_6  
-  };
-  targetPins = new byte[6]
-  {
-    TARGET_SIGN_1,
-    TARGET_SIGN_2,
-    TARGET_SIGN_3,
-    TARGET_SIGN_4,
-    TARGET_SIGN_5,
-    TARGET_SIGN_6  
-  };
-  
+  targetLight = new byte[6]{
+      TARGET_1,
+      TARGET_2,
+      TARGET_3,
+      TARGET_4,
+      TARGET_5,
+      TARGET_6};
+  targetPins = new byte[6]{
+      TARGET_SIGN_1,
+      TARGET_SIGN_2,
+      TARGET_SIGN_3,
+      TARGET_SIGN_4,
+      TARGET_SIGN_5,
+      TARGET_SIGN_6};
+  _hitThreshold = new unsigned short[6]{
+      HIT_THRESHOLD_T1,
+      HIT_THRESHOLD_T2,
+      HIT_THRESHOLD_T3,
+      HIT_THRESHOLD_T4,
+      HIT_THRESHOLD_T5,
+      HIT_THRESHOLD_T6};
+  ticker = 0;
+
   towerInit();
-  for(;;)
+  for (;;)
   {
     hittedTarget = getHittedTarget();
     if (hittedTarget)
@@ -55,18 +59,22 @@ Tower::Tower() :
 void Tower::towerInit()
 {
   Serial.begin(19200);
-  Serial1.begin(74880);
-  strip.activate();
-  
+  Serial1.begin(57600);
+  strip->activate();
+
   for (byte i(0); i < 6; i++)
   {
     byte currentPin = this->targetLight[i];
     pinMode(currentPin, OUTPUT);
     digitalWrite(currentPin, HIGH);
   }
-  
+
   bus->SwitchColor(converter->getColorInfoRGB());
   setHPColor();
+
+  strip->showRed(0.0);
+
+  // strip.pushLED();
 
   Serial.println("Tower initialized");
 }
@@ -78,16 +86,26 @@ void Tower::towerInit()
 */
 void Tower::towerCycle()
 {
-    //Serial.println("aboba");
+  if (ticker > 0xFFFFFFF0)
+    ticker = 0;
+  if (ticker % 1000 == 0)
+  {
+    Serial.println("Fire");
+    strip->pushLED();
+    strip->pushSideLED();
+    strip->pushTopLED();
+  }
+  ticker++;
+  //Serial.println(ticker);
 }
 
 byte Tower::getHittedTarget()
 {
   byte hittedTargets(0x00);
-  
+
   for (byte i(0); i < 6; i++)
   {
-    if (analogRead(this->targetPins[i]) >= _hitThreshold)
+    if (analogRead(this->targetPins[i]) >= _hitThreshold[i])
     {
       /*
         Возвращаю линейный массив битов, соответствующий
@@ -105,7 +123,8 @@ byte Tower::getHittedTarget()
       */
       hittedTargets = hittedTargets ^ (0b1 << i);
     }
-    else continue;
+    else
+      continue;
   }
   return hittedTargets;
 }
@@ -115,7 +134,7 @@ void Tower::onTargetHitEvent(byte target)
   Serial1.write(target);
 
   byte dmgMultiplier(0);
-  byte *hittedTargets = new byte[6]{ 0 };
+  byte *hittedTargets = new byte[6]{0};
 
   /*
     Обработка хитов происходит следующим образом:
@@ -143,11 +162,12 @@ void Tower::onTargetHitEvent(byte target)
     {
       hittedTargets[i] = this->targetLight[i];
       dmgMultiplier++;
-      //SquareWave(this->targetLight[i], BLINK_FREQUENCY, BLINK_ITERATOR);
+      // SquareWave(this->targetLight[i], BLINK_FREQUENCY, BLINK_ITERATOR);
     }
-    else continue;
+    else
+      continue;
   }
-  
+
   hitPoints -= (double)(dmgMultiplier * DAMAGE);
 
   // Если хитпоинты закончились, то запускаем ивент уничтожения башни
@@ -159,17 +179,16 @@ void Tower::onTargetHitEvent(byte target)
 
   // Не забываем отправить отладочную информацию в порт
   Serial.println(hitPoints);
-  
+
   setHPColor();
   SquareWave(hittedTargets, BLINK_FREQUENCY, BLINK_ITERATOR);
 
   // Осталось только отправить пакет данных для сопроцессора
-  //Serial1.write();
+  // Serial1.write();
 }
 
 void Tower::onTowerDestroyedEvent()
 {
-  
 }
 
 inline void Tower::setHPColor()
