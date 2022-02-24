@@ -34,12 +34,11 @@ public:
 	LEDstrip();
 	void activate();
 	void showRed(double hue, int dVal = 100);
-	void showBlue(double hue, int dVal = 100);
 	void showSide(double hueStart = 0.0, double hueEnd = 0.8, int dVal = 100);
-	void turnOff(int dVal = 100);
 	void pushLED();
 	void pushSideLED();
 	void pushTopLED();
+	void deathLight(int dval = 100);
 };
 
 //#endif

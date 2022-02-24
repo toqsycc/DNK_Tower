@@ -189,6 +189,7 @@ void Tower::onTargetHitEvent(byte target)
 
 void Tower::onTowerDestroyedEvent()
 {
+  strip->deathLight(255);
 }
 
 inline void Tower::setHPColor()
