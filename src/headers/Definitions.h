@@ -107,12 +107,12 @@
 
 // Программные константы
 // Граница чувствительности пьезодатчиков
-#define HIT_THRESHOLD_T1  1000
-#define HIT_THRESHOLD_T2  1000
-#define HIT_THRESHOLD_T3  1000
-#define HIT_THRESHOLD_T4  1000
-#define HIT_THRESHOLD_T5  1000
-#define HIT_THRESHOLD_T6  1000
+#define HIT_THRESHOLD_T1  512
+#define HIT_THRESHOLD_T2  512
+#define HIT_THRESHOLD_T3  512
+#define HIT_THRESHOLD_T4  512
+#define HIT_THRESHOLD_T5  512
+#define HIT_THRESHOLD_T6  512
 // Начальное количество хп
 #define HP_VALUE          100
 // коэффициент деления для перевода количества хп в цвет

@@ -123,6 +123,7 @@ void LEDstrip::pushTopLED()
     byte *c = color.getColorInfoRGB();
     leds_top[currentTop] = CRGB(c[0], c[1], c[2]);
     FastLED[2].showLeds();
+    Serial.println(currentTop);
     currentTop++;
     isReverseTop = currentTop == 3 ? true : false;
   }
@@ -132,6 +133,7 @@ void LEDstrip::pushTopLED()
     byte *c = color.getColorInfoRGB();
     leds_top[currentTop] = CRGB(c[0], c[1], c[2]);
     FastLED[2].showLeds();
+    Serial.println(currentTop);
     currentTop--;
     isReverseTop = currentTop <= 0 ? false : true;
   }
