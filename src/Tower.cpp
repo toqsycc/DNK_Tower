@@ -11,7 +11,8 @@ Tower::~Tower()
 
 Tower::Tower() :
   hitPoints(HP_VALUE),
-  hpColor(HP_COLOR)
+  hpColor(HP_COLOR),
+  isTowerDestroyed(false)
 {
   bus = new RGBDiode();
   converter = new HSL(hpColor, 1.0, 0.5);
@@ -40,7 +41,7 @@ Tower::Tower() :
   for(;;)
   {
     hittedTarget = getHittedTarget();
-    if (hittedTarget)
+    if (hittedTarget && !isTowerDestroyed)
       onTargetHitEvent(hittedTarget);
     else
       towerCycle();
