@@ -65,6 +65,7 @@ private:
     // @section variables
     double            hitPoints;
     double            hpColor;
+    bool              isTowerDestroyed;
 
     // @section arrays
     byte* targetPins;
